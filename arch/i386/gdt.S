@@ -1,4 +1,6 @@
-#include "gdt.h"
+#define ASM_SOURCE    1
+#include "arch.h"
+
 
 .section .data
 // !!!各个段的先后顺序要和gdt.h里申明的一样!!!
@@ -55,8 +57,8 @@ gdtr:
 
 .section .text
 .extern reloadseg
-.global gdt_init
-gdt_init:
+.global load_gdtr
+load_gdtr:
     lgdt gdtr
 
     // switch to pm

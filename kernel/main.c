@@ -1,3 +1,4 @@
+#include <interrupt.h>
 #include <logging.h>
 #include <multiboot.h>
 #include <stdio.h>
@@ -7,6 +8,7 @@ static void init()
 {
     stdio_init();
     logging_init();
+    interrupt_init();
 }
 
 
@@ -18,6 +20,5 @@ void start_kernel(unsigned magic, const multiboot_info_t *info)
 
     printf("\nHello, %s World!\n", "OS");
 
-    log_info(LOGGER_MAIN, "Can you see this %s?", "message");
-    log_warn(LOGGER_MAIN, "A warning log through serial line.");
+    log_warn(LOGGER_MAIN, "kernel is going to exit...");
 }

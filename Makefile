@@ -14,6 +14,7 @@ driver_objs    = $(driver_sources:.c=.o)
 
 arch_sources = $(wildcard arch/$(ARCH)/*.S)
 krnl_sources = $(wildcard $(module_kernel)/*.c)
+krnl_runlogs = serials.log.txt
 kernel_file  = kernel.elf
 kernel_objs  = $(arch_sources:.S=.o) $(krnl_sources:.c=.o)
 
@@ -29,16 +30,18 @@ CFLAGS   = -std=c99 \
 		   -static \
 		   -nostdinc -nostdlib \
 		   -fno-builtin -fno-stack-protector -nostartfiles -nodefaultlibs \
-		   -Wall -Wextra -Werror
+		   -Wall -Wextra -Werror \
+		   -O0 -g
 
-ASFLAGS  = -m32
+ASFLAGS  = -m32 \
+		   -O0 -g
 
 LDFLAGS  = -melf_i386
 
 ARFLAGS  = rvU
 
 
-.PHONY: all clean tests testsclean
+.PHONY: all clean tests testsclean mrmuscle
 
 all: $(kernel_file)
 	@echo Successfully constructed new kernel: $(kernel_file)
@@ -46,11 +49,17 @@ all: $(kernel_file)
 
 
 run: $(newimg)
-	qemu-system-$(ARCH) -curses -cdrom $(newimg) -m 8M -serial file:serial.log.txt
+	qemu-system-$(ARCH) -curses -cdrom $(newimg) -m 8M -serial file:$(krnl_runlogs)
 
 
 runclean:
-	$(RM) serial.log.txt
+	$(RM)    $(newimg)
+	$(RM) -r $(isodir)
+	$(RM)    $(krnl_runlogs)
+
+
+debug: $(kernel_file)
+	qemu-system-$(ARCH) -curses -s -S -kernel $< -m 8M -serial file:$(krnl_runlogs)
 
 
 $(newimg): $(kernel_file) iso/grub.cfg
@@ -70,8 +79,6 @@ clean:
 	$(RM)    $(kernel_objs)
 	$(RM)    $(kernel_file)
 	$(RM)    $(lib_objs)
-	$(RM)    $(newimg)
-	$(RM) -r $(isodir)
 
 
 tests: $(lib_archive)($(lib_objs) $(driver_objs))
@@ -81,3 +88,8 @@ tests: $(lib_archive)($(lib_objs) $(driver_objs))
 testsclean:
 	$(MAKE) -C $(module_test) clean
 	$(RM) $(lib_archive)
+
+
+mrmuscle: clean runclean testsclean
+	git clean -fd
+	@echo 'All cleaned'

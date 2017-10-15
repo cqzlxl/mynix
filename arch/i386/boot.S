@@ -1,6 +1,6 @@
-#define ASM_FILE        1
+#define ASM_SOURCE
 #include <multiboot.h>
-#include "gdt.h"
+#include "arch.h"
 
 #define MULTIBOOT_HEADER_FLAGS  MULTIBOOT_PAGE_ALIGN | MULTIBOOT_MEMORY_INFO
 #define MULTIBOOT_HEADER_CHECK  -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS)
@@ -14,7 +14,7 @@
 
 
 .section .text
-.extern gdt_init, start_kernel, puts
+.extern load_gdtr, load_idtr, start_kernel, puts
 .global bootstrap, reloadseg
 
 bootstrap:
@@ -28,7 +28,7 @@ bootstrap:
     pushl   %ebx
     pushl   %eax
 
-    jmp     gdt_init
+    jmp     load_gdtr
 
 reloadseg:
     movw    $KERNEL_DS, %ax
@@ -38,8 +38,12 @@ reloadseg:
     movw    %ax, %gs
     movw    %ax, %ss
 
+    call    load_idtr
+
     call    start_kernel
     addl    $8, %esp
+
+    int     $33
 
     pushl   $halt_message
     call    puts

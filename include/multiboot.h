@@ -71,7 +71,7 @@
 #define MULTIBOOT_INFO_FRAMEBUFFER_INFO         0x00001000
 
 
-#ifndef ASM_FILE
+#ifndef ASM_SOURCE
 
 typedef unsigned char           multiboot_uint8_t;
 typedef unsigned short          multiboot_uint16_t;
@@ -247,7 +247,7 @@ struct multiboot_apm_info {
 extern void dump_multiboot_info(unsigned magic, const multiboot_info_t *info);
 
 
-#endif /* ! ASM_FILE */
+#endif /* ! ASM_SOURCE */
 
 
 #endif /* ! MULTIBOOT_HEADER */

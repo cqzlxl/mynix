@@ -10,7 +10,7 @@
 #define LOGGER_MAIN     "MAIN"
 #define LOGGER_MM       "MM"
 #define LOGGER_PM       "PM"
-
+#define LOGGER_INT      "INT"
 
 extern void logging_init();
 

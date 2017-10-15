@@ -1,7 +1,9 @@
 #ifndef DEF_H
 #define DEF_H
 
-#include <int.h>
+#define arch_header(A) <arch/A/arch.h>
+
+#include arch_header(ARCH)
 
 
 #define NULL  ((void *) 0)

@@ -37,7 +37,7 @@ static int do_log(const char *logger, int level, const char *format, va_list ap)
     int count = 0;
 
     int n;
-    n = printf_e(appender, "[%s] [%+5s] ", logger, slevel);
+    n = printf_e(appender, "[%+5s] [%s] ", slevel, logger);
     if (n == -1) {
         return -1;
     } else {

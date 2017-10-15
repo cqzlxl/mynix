@@ -1,7 +1,7 @@
 #ifndef IO_H
 #define IO_H
 
-#include <int.h>
+#include <def.h>
 
 
 extern u8 inb(u16 port);
